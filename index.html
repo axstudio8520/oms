@@ -18,137 +18,117 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            /* width: 90%; */
+            min-height: 100vh;
             margin: 0;
         }
 
-        /* .container {
-            width: 90%;
-            max-width: 1200px;
-            background-color: #4d4d4d;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        } */
-
-        .header {
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 20px;
-            font-weight: bold;
+        .container {
+            width: 98%;
+            max-width: 1400px;
+            padding: 20px;
         }
 
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
-        h2 {
-            font-size: 18px;
-            color: #555;
+        /* Flexbox layout for 6 buttons per row */
+        .button-group {
+            display: flex;
+            flex-wrap: nowrap; /* Forces them into one row */
+            gap: 10px; 
             margin-bottom: 10px;
         }
 
-        /* Flexbox layout for button groups */
-        .button-group {
-            display: flex;
-            flex-wrap: wrap; /* Allows buttons to wrap to the next row */
-            gap: 10px; /* Adds spacing between buttons */
-        }
-
         .button-group a {
-            flex: 1 1 calc(10.66% - 10px); /* Each button will take 1/6th of the row width, with spacing */
+            flex: 1; /* Distributes 6 buttons equally */
             text-align: center;
-            padding: 8px 15px;
-            font-size: 20px;  /* Smaller text size for buttons */
+            padding: 15px 5px;
+            font-size: 16px;
+            font-weight: bold;
             color: #fff;
             text-decoration: none;
             border-radius: 4px;
             transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .button-group a span {
+            font-size: 22px;
         }
 
         .button-group a:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            filter: brightness(1.1);
         }
 
-        .button-group a:active {
-            transform: translateY(2px);
-        }
+        /* Your Original Colors */
+        .new-button { background-color: #007BFF; }
+        .packed-button { background-color: #ffc107; color: #000 !important; }
+        .ready-to-ship-button { background-color: #28a745; }
+        .inventory-button { background-color: #17a2b8; }
+        .products-button { background-color: #dc3545; }
+        .extra-button { background-color: #95a5a6; } /* Grey for new management buttons */
 
-        /* Specific colors for each section */
-        .new-button {
-            background-color: #007BFF; /* Blue for NEW */
-        }
-
-        .packed-button {
-            background-color: #ffc107; /* Green for PACKED */
-        }
-
-        .ready-to-ship-button {
-            background-color: #28a745; /* Yellow for READY TO SHIP */
-        }
-
-        .inventory-button {
-            background-color: #17a2b8; /* Teal for Inventory */
-        }
-
-        .products-button {
-            background-color: #dc3545; /* Red for Products */
-        }
-
-        /* Hover effects for each section */
-        .new-button:hover {
-            background-color: #0056b3;
-        }
-
-        .packed-button:hover {
-            background-color: #e0a800;
-        }
-
-        .ready-to-ship-button:hover {
-            background-color: #218838;
-        }
-
-        .inventory-button:hover {
-            background-color: #138496;
-        }
-
-        .products-button:hover {
-            background-color: #c82333;
+        /* Responsive: stack on mobile if the screen is too small */
+        @media (max-width: 900px) {
+            .button-group { flex-wrap: wrap; }
+            .button-group a { flex: 1 1 calc(33.33% - 10px); }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- <div class="header">Interactive Order Links</div> -->
 
         <div class="section">
-            <!-- <h2>NEW</h2> -->
             <div class="button-group">
-                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%7D%7D" target="_blank" class="new-button">Flipkart</a>
-                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="new-button">Meesho</a>
-                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%7D" target="_blank" class="new-button">Amazon</a>
-                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%7D%7D" target="_blank" class="packed-button">Pack Flipkart</a>
-                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="packed-button">Pack Meesho</a>
-                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%7D" target="_blank" class="packed-button">Pack Amazon</a>
+                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%7D%7D" target="_blank" class="new-button"><span>🛒</span>Flipkart</a>
+                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="new-button"><span>🛍️</span>Meesho</a>
+                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%7D" target="_blank" class="new-button"><span>📦</span>Amazon</a>
+                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%7D%7D" target="_blank" class="packed-button"><span>🎁</span>Pack FK</a>
+                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="packed-button"><span>🎁</span>Pack MS</a>
+                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%7D" target="_blank" class="packed-button"><span>🎁</span>Pack AZ</a>
             </div>
         </div>
 
-        
-
         <div class="section">
-            <!-- <h2>READY TO SHIP</h2> -->
             <div class="button-group">
-                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%7D%7D" target="_blank" class="ready-to-ship-button">Flipkart</a>
-                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="ready-to-ship-button">Meesho</a>
-                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%7D" target="_blank" class="ready-to-ship-button">Amazon</a>
-                <a href="https://client.omsguru.com/invoice_pack_logs" target="_blank" class="inventory-button">Pack Log</a>
-                <a href="https://client.omsguru.com/skus/list_products" target="_blank" class="products-button">Products</a>
-                <a href="https://client.omsguru.com/picklists" target="_blank" class="products-button">Picklists</a>
+                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%7D%7D" target="_blank" class="ready-to-ship-button"><span>🚚</span>Ship FK</a>
+                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="ready-to-ship-button"><span>🚚</span>Ship MS</a>
+                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%7D" target="_blank" class="ready-to-ship-button"><span>🚚</span>Ship AZ</a>
+                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22shipping_company%22%3A%7B%22ne%22%3A%22%22%7D%7D" target="_blank" class="inventory-button"><span>📜</span>Pack Down</a>
+                <a href="https://client.omsguru.com/skus/list_products" target="_blank" class="products-button"><span>👕</span>Products</a>
+                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22product_category_id%22%3A%7B%220%22%3A%22202454%22%7D%7D" target="_blank" class="products-button"><span>📝</span>Ready Mousepad</a>
+            </div>
         </div>
 
-    
+<!--         <div class="section">
+            <div class="button-group">
+                <a href="https://client.omsguru.com/manifests" target="_blank" class="extra-button"><span>📄</span>Manifest</a>
+                <a href="https://client.omsguru.com/returns/customer_returns" target="_blank" class="extra-button"><span>🔄</span>Returns</a>
+                <a href="https://client.omsguru.com/orders/cancelledOrders" target="_blank" class="extra-button"><span>🚫</span>Cancelled</a>
+                <a href="#" target="_blank" class="extra-button"><span>🏭</span>Inventory</a>
+                <a href="#" target="_blank" class="extra-button"><span>📊</span>Reports</a>
+                <a href="#" target="_blank" class="extra-button"><span>⚙️</span>Settings</a>
+            </div>
+        </div>
+
+                <div class="section">
+            <div class="button-group">
+                <a href="https://client.omsguru.com/manifests" target="_blank" class="extra-button"><span>📄</span>Manifest</a>
+                <a href="https://client.omsguru.com/returns/customer_returns" target="_blank" class="extra-button"><span>🔄</span>Returns</a>
+                <a href="https://client.omsguru.com/orders/cancelledOrders" target="_blank" class="extra-button"><span>🚫</span>Cancelled</a>
+                <a href="#" target="_blank" class="extra-button"><span>🏭</span>Inventory</a>
+                <a href="#" target="_blank" class="extra-button"><span>📊</span>Reports</a>
+                <a href="#" target="_blank" class="extra-button"><span>⚙️</span>Settings</a>
+            </div>
+        </div> -->
+
     </div>
 
 </body>
