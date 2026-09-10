@@ -3,131 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Order Links</title>
+    <title>OMS Operations Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Basic Reset */
-        body, h1, h2, p, a {
+        :root {
+            --bg-main: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            
+            /* Accent gradients */
+            --blue-grad: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            --amber-grad: linear-gradient(135deg, #f59e0b, #b45309);
+            --green-grad: linear-gradient(135deg, #10b981, #047857);
+            --purple-grad: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            --rose-grad: linear-gradient(135deg, #f43f5e, #be123c);
+            --teal-grad: linear-gradient(135deg, #14b8a6, #0f766e);
+            --slate-grad: linear-gradient(135deg, #64748b, #334155);
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
-            background-color: #34495e;
-            color: #333;
+            background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.12) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            padding: 40px 20px;
         }
 
-        .container {
-            width: 98%;
-            max-width: 1400px;
-            padding: 20px;
-        }
-
-        .section {
-            margin-bottom: 15px;
-        }
-
-        /* Flexbox layout for 6 buttons per row */
-        .button-group {
+        .dashboard-container {
+            width: 100%;
+            max-width: 1440px;
             display: flex;
-            flex-wrap: nowrap; /* Forces them into one row */
-            gap: 10px; 
-            margin-bottom: 10px;
+            flex-direction: column;
+            gap: 28px;
         }
 
-        .button-group a {
-            flex: 1; /* Distributes 6 buttons equally */
-            text-align: center;
-            padding: 15px 5px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-sub);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        /* 7 buttons per row */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            padding: 14px 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 0;
         }
 
-        .button-group a span {
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: transparent;
+            transition: background 0.25s ease;
+        }
+
+        .btn .icon {
             font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            transition: transform 0.2s ease;
         }
 
-        .button-group a:hover {
-            transform: translateY(-3px);
-            filter: brightness(1.1);
+        .btn .label {
+            font-size: 12.5px;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
         }
 
-        /* Your Original Colors */
-        .new-button { background-color: #007BFF; }
-        .packed-button { background-color: #ffc107; color: #000 !important; }
-        .ready-to-ship-button { background-color: #28a745; }
-        .inventory-button { background-color: #17a2b8; }
-        .products-button { background-color: #dc3545; }
-        .extra-button { background-color: #95a5a6; } /* Grey for new management buttons */
+        /* Hover states */
+        .btn:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.4);
+        }
 
-        /* Responsive: stack on mobile if the screen is too small */
-        @media (max-width: 900px) {
-            .button-group { flex-wrap: wrap; }
-            .button-group a { flex: 1 1 calc(33.33% - 10px); }
+        .btn:hover .icon {
+            transform: scale(1.1);
+        }
+
+        /* Category accent indicators */
+        .theme-blue::before { background: var(--blue-grad); }
+        .theme-blue:hover { background: rgba(59, 130, 246, 0.1); }
+
+        .theme-amber::before { background: var(--amber-grad); }
+        .theme-amber:hover { background: rgba(245, 158, 11, 0.1); }
+
+        .theme-green::before { background: var(--green-grad); }
+        .theme-green:hover { background: rgba(16, 185, 129, 0.1); }
+
+        .theme-teal::before { background: var(--teal-grad); }
+        .theme-teal:hover { background: rgba(20, 184, 166, 0.1); }
+
+        .theme-rose::before { background: var(--rose-grad); }
+        .theme-rose:hover { background: rgba(244, 63, 94, 0.1); }
+
+        .theme-slate::before { background: var(--slate-grad); }
+        .theme-slate:hover { background: rgba(100, 116, 139, 0.1); }
+
+        @media (max-width: 1100px) {
+            .button-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .button-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="dashboard-container">
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>⚡ OMSGuru Operations Hub</h1>
+        </div>
 
+        <!-- Row 1: New, Pack & Handover -->
         <div class="section">
-            <div class="button-group">
-                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%2C%221%22%3A%2262026%22%7D%7D" target="_blank" class="new-button"><span>🛒</span>FK/Myntra</a>
-                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="new-button"><span>🛍️</span>Meesho</a>
-                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%7D" target="_blank" class="new-button"><span>📦</span>Amazon</a>
-                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%2C%221%22%3A%2262026%22%7D%7D" target="_blank" class="packed-button"><span>🎁</span>Pack FK/Myntra</a>
-                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="packed-button"><span>🎁</span>Pack Meesho</a>
-                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%7D" target="_blank" class="packed-button"><span>🎁</span>Pack Amazon</a>
+            <div class="section-title">New, Pack & Operations</div>
+            <div class="button-grid">
+                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%2C%221%22%3A%2262026%22%7D%7D" target="_blank" class="btn theme-blue">
+                    <span class="icon">🛒</span>
+                    <span class="label">FK/Myntra New</span>
+                </a>
+                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="btn theme-blue">
+                    <span class="icon">🛒</span>
+                    <span class="label">Meesho New</span>
+                </a>
+                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%7D" target="_blank" class="btn theme-blue">
+                    <span class="icon">🛒</span>
+                    <span class="label">Amazon New</span>
+                </a>
+                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%2C%221%22%3A%2262026%22%7D%7D" target="_blank" class="btn theme-amber">
+                    <span class="icon">📦</span>
+                    <span class="label">Pack FK/Myntra</span>
+                </a>
+                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="btn theme-amber">
+                    <span class="icon">📦</span>
+                    <span class="label">Pack Meesho</span>
+                </a>
+                <!-- Added Button 1 -->
+                <a href="https://client.omsguru.com/manifests" target="_blank" class="btn theme-amber">
+                    <span class="icon">📦</span>
+                    <span class="label">Pack Amazon</span>
+                </a>
+                <!-- Added Button 2 -->
+                <a href="https://client.omsguru.com/notifications" target="_blank" class="btn theme-rose">
+                    <span class="icon">🔔</span>
+                    <span class="label">Notification</span>
+                </a>
             </div>
         </div>
 
+        <!-- Row 2: Dispatch, Inventory & Management -->
         <div class="section">
-            <div class="button-group">
-                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%2C%221%22%3A%2262026%22%7D%7D" target="_blank" class="ready-to-ship-button"><span>🚚</span>Ship FK/Myntra</a>
-                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="ready-to-ship-button"><span>🚚</span>Ship Meesho</a>
-                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%7D" target="_blank" class="ready-to-ship-button"><span>🚚</span>Ship Amazon</a>
-                <a href="https://client.omsguru.com/skus/list_products" target="_blank" class="products-button"><span>👕</span>Products</a>
-                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22shipping_company%22%3A%7B%22ne%22%3A%22%22%7D%7D" target="_blank" class="inventory-button"><span>📜</span>Pack Down</a>
-                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22product_category_id%22%3A%7B%220%22%3A%22202454%22%7D%7D" target="_blank" class="products-button"><span>📝</span>Ready Mousepad</a>
+            <div class="section-title">Dispatch & Catalog</div>
+            <div class="button-grid">
+                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%2C%221%22%3A%2262026%22%7D%7D" target="_blank" class="btn theme-green">
+                    <span class="icon">🚚</span>
+                    <span class="label">Ship FK/Myntra</span>
+                </a>
+                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="btn theme-green">
+                    <span class="icon">🚚</span>
+                    <span class="label">Ship Meesho</span>
+                </a>
+                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%2C%22sla_date%22%3A%7B%220%22%3A%2209%2F10%2F2026%2012%3A00%20AM%22%2C%221%22%3A%2209%2F10%2F2026%2012%3A00%20AM%22%7D%7D" target="_blank" class="btn theme-green">
+                    <span class="icon">🚚</span>
+                    <span class="label">Ship Amazon</span>
+                </a>
+                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22shipping_company%22%3A%7B%22ne%22%3A%22%22%7D%7D" target="_blank" class="btn theme-teal">
+                    <span class="icon">📜</span>
+                    <span class="label">Pack Down</span>
+                </a>
+                <a href="https://client.omsguru.com/skus/list_products" target="_blank" class="btn theme-slate">
+                    <span class="icon">👕</span>
+                    <span class="label">Products</span>
+                </a>
+                <!-- Added Button 3 -->
+                <a href="https://client.omsguru.com/skus/inventory" target="_blank" class="btn theme-teal">
+                    <span class="icon">🏭</span>
+                    <span class="label">Inventory</span>
+                </a>
+                <!-- Added Button 4 -->
+                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22product_category_id%22%3A%7B%220%22%3A%22202454%22%7D%7D" target="_blank" class="btn theme-rose">
+                    <span class="icon">📝</span>
+                    <span class="label">Ready Mousepad</span>
+                </a>
             </div>
         </div>
-
-<!--         <div class="section">
-            <div class="button-group">
-                <a href="https://client.omsguru.com/manifests" target="_blank" class="extra-button"><span>📄</span>Manifest</a>
-                <a href="https://client.omsguru.com/returns/customer_returns" target="_blank" class="extra-button"><span>🔄</span>Returns</a>
-                <a href="https://client.omsguru.com/orders/cancelledOrders" target="_blank" class="extra-button"><span>🚫</span>Cancelled</a>
-                <a href="#" target="_blank" class="extra-button"><span>🏭</span>Inventory</a>
-                <a href="#" target="_blank" class="extra-button"><span>📊</span>Reports</a>
-                <a href="#" target="_blank" class="extra-button"><span>⚙️</span>Settings</a>
-            </div>
-        </div>
-
-                <div class="section">
-            <div class="button-group">
-                <a href="https://client.omsguru.com/manifests" target="_blank" class="extra-button"><span>📄</span>Manifest</a>
-                <a href="https://client.omsguru.com/returns/customer_returns" target="_blank" class="extra-button"><span>🔄</span>Returns</a>
-                <a href="https://client.omsguru.com/orders/cancelledOrders" target="_blank" class="extra-button"><span>🚫</span>Cancelled</a>
-                <a href="#" target="_blank" class="extra-button"><span>🏭</span>Inventory</a>
-                <a href="#" target="_blank" class="extra-button"><span>📊</span>Reports</a>
-                <a href="#" target="_blank" class="extra-button"><span>⚙️</span>Settings</a>
-            </div>
-        </div> -->
 
     </div>
 
