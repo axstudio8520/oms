@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EJISH | PackingList</title>
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f4f7f6; }
+        .container { max-width: 1200px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 3px solid #007bff; padding-bottom: 10px; }
+        .stats-left { display: flex; gap: 10px; align-items: center; }
+        #drop-area { border: 2px dashed #007bff; border-radius: 10px; padding: 30px; text-align: center; background: #f0f7ff; cursor: pointer; margin-bottom: 20px; }
+        /* Adjusted width for better alignment */
+        .qty-input { width: 40px; font-weight: bold; text-align: right; border: 1px solid #ccc; border-radius: 4px; padding: 4px; }
+        .badge { padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 14px; }
+        .total-badge { background: #28a745; color: white; }
+        .row-badge { background: #007bff; color: white; }
+        .btn-export { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-copy { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-export:hover { background: #c82333; }
+        .btn-copy:hover { background: #5a6268; }
+        
+        #capture-area { background: white; padding: 20px; width: 50%; margin: auto; }
+        .export-mode #inventoryTable { width: auto !important; margin: auto; border: 1px solid #eee; }
+        .temp-text { font-weight: bold; font-size: 16px; display: inline-block; width: 60px; text-align: right; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="stats-left">
+            <div id="totalQtyDisplay" class="badge total-badge">Total QTY: 0</div>
+            <div id="rowCounter" class="badge row-badge">Items: 0</div>
+            <button id="exportBtn" class="btn-export">📸 Export PNG</button>
+            <button id="copyBtn" class="btn-copy">📋 Copy Image</button>
+        </div>
+        <h2 style="margin:0;">EJISH | PackingList</h2>
+    </div>
+
+    <div id="drop-area">
+        <strong>Drag & Drop packinglist.pdf</strong>
+        <input type="file" id="pdfInput" accept="application/pdf" style="display:none">
+    </div>
+
+    <div id="capture-area">
+        <table id="inventoryTable" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">QTY</th>
+                    <th style="text-align: left;">SKU Code</th>
+                    <th class="extra-col">Product Name</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const pdfjsLib = window['pdfjs-dist/build/pdf'];
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+    let table;
+
+    $.fn.dataTable.ext.order['dom-text-numeric'] = function(settings, col) {
+        return this.api().column(col, {order: 'index'}).nodes().map(function(td, i) {
+            return $('input', td).val() * 1;
+        });
+    };
+
+    $(document).ready(function() {
+        table = $('#inventoryTable').DataTable({
+            "pageLength": -1,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "columns": [
+                { "orderDataType": "dom-text-numeric" },
+                null,
+                null
+            ],
+            "drawCallback": function() { calculateGrandTotal(); }
+        });
+    });
+
+    function calculateGrandTotal() {
+        let total = 0;
+        $('.qty-input').each(function() {
+            let val = parseInt($(this).val());
+            if (!isNaN(val)) total += val;
+        });
+        $('#totalQtyDisplay').text('Total QTY: ' + total);
+    }
+
+    $(document).on('input', '.qty-input', function() { calculateGrandTotal(); });
+
+    function prepareForCapture() {
+        const now = new Date().toLocaleString();
+    $('#capture-area').prepend(`<div id="temp-header" style="text-align:right; font-size:12px; color:#666;">Generated: ${now}</div>`);
+    // $('#totalQtyDisplay').text('Total QTY: ' + total);
+
+        document.body.classList.add('export-mode');
+        // Now only hiding the Product Name column (Index 2)
+        table.column(2).visible(false);
+        // $('.qty-input').each(function() {
+        //     $(this).parent().append('<span class="temp-text">' + $(this).val() + '</span>');
+        //     $(this).hide();
+        // });
+
+        // 2. Convert QTY inputs to plain text for the screenshot
+    $('.qty-input').each(function() {
+        $(this).parent().append('<span class="temp-text">' + $(this).val() + '</span>');
+        $(this).hide();
+    });
+
+    // 3. Inject a "Total" row at the bottom of the tbody for the PNG
+    const totalQty = $('#totalQtyDisplay').text().replace('Total QTY: ', '');
+    $('#tableBody').append(`
+        <tr class="temp-total-row" style="background: #f8f9fa; font-weight: bold; border-top: 2px solid #333;">
+            <td style="text-align: center; border-top: 2px solid #000;">${totalQty}</td>
+            <td style="text-align: left; border-top: 2px solid #000;">GRAND TOTAL</td>
+        </tr>
+    `);
+    }
+
+    function cleanupAfterCapture() {
+        table.column(2).visible(true);
+
+        $('#temp-header').remove();
+        $('.temp-total-row').remove();
+        $('.temp-text').remove();
+        
+        $('.qty-input').show();
+        document.body.classList.remove('export-mode');
+    }
+
+    document.getElementById('exportBtn').addEventListener('click', function() {
+        const area = document.getElementById('capture-area');
+        prepareForCapture();
+        html2canvas(area).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `packinglist_${new Date().toLocaleDateString()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+            cleanupAfterCapture();
+        });
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', function() {
+        const area = document.getElementById('capture-area');
+        const btn = $(this);
+        prepareForCapture();
+        html2canvas(area).then(canvas => {
+            canvas.toBlob(blob => {
+                const item = new ClipboardItem({ "image/png": blob });
+                navigator.clipboard.write([item]).then(() => {
+                    const originalText = btn.text();
+                    btn.text('✅ Copied!').css('background', '#28a745');
+                    setTimeout(() => {
+                        btn.text(originalText).css('background', '#6c757d');
+                    }, 2000);
+                });
+            });
+            cleanupAfterCapture();
+        });
+    });
+
+    const dropArea = document.getElementById('drop-area');
+    dropArea.addEventListener('dragover', (e) => { e.preventDefault(); dropArea.classList.add('highlight'); });
+    dropArea.addEventListener('dragleave', () => dropArea.classList.remove('highlight'));
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.classList.remove('highlight');
+        handleFile(e.dataTransfer.files[0]);
+    });
+    dropArea.addEventListener('click', () => document.getElementById('pdfInput').click());
+    document.getElementById('pdfInput').addEventListener('change', function() { handleFile(this.files[0]); });
+
+    async function handleFile(file) {
+        if (!file || file.type !== "application/pdf") return;
+        const reader = new FileReader();
+        reader.onload = async function() {
+            const pdf = await pdfjsLib.getDocument(new Uint8Array(this.result)).promise;
+            let allItems = [];
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const items = textContent.items.map(item => ({ str: item.str.trim(), y: Math.round(item.transform[5]) })).filter(item => item.str !== "");
+                const lines = {};
+                items.forEach(item => {
+                    if (!lines[item.y]) lines[item.y] = [];
+                    lines[item.y].push(item.str);
+                });
+                Object.values(lines).forEach(lineArray => {
+                    const lineText = lineArray.join(" ");
+                    // Extracting only SKU, Name, and QTY
+                    if (lineArray.length >= 3 && lineText.includes('-') && !lineText.toLowerCase().includes('total')) {
+                        allItems.push({
+                            sku: lineArray[0],
+                            name: lineArray[lineArray.length - 3],
+                            qty: lineArray[lineArray.length - 2]
+                        });
+                    }
+                });
+            }
+            renderTable(allItems);
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function renderTable(data) {
+        table.clear();
+        data.forEach(item => {
+            table.row.add([
+                `<input type="number" class="qty-input" value="${item.qty}">`,
+                item.sku,
+                item.name
+            ]);
+        });
+        table.draw();
+        $('#rowCounter').text('Items: ' + data.length);
+        calculateGrandTotal();
+    }
+</script>
+</body>
+</html>
