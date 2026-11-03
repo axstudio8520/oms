@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precision QR Designer Pro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root { --panel-bg: #0f172a; --card-bg: #1e293b; --accent: #38bdf8; --text: #f1f5f9; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #94a3b8; margin: 0; display: flex; height: 100vh; color: var(--text); }
+
+        /* Control Panel */
+        .sidebar { width: 380px; background: var(--panel-bg); padding: 20px; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
+        h2 { font-size: 1.2rem; margin-bottom: 20px; color: var(--accent); border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        
+        .control-box { background: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155; }
+        .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .label-text { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; }
+        
+        input[type="text"] { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; margin-bottom: 10px; }
+        
+        /* Dual Input Row */
+        .input-sync { display: flex; align-items: center; gap: 12px; }
+        input[type="range"] { flex: 1; accent-color: var(--accent); cursor: pointer; }
+        input[type="number"] { width: 65px; background: #0f172a; border: 1px solid #475569; color: var(--accent); padding: 5px; border-radius: 4px; font-weight: bold; text-align: center; }
+
+        .btn-print { width: 100%; padding: 16px; background: var(--accent); color: #0f172a; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 1rem; margin-top: 10px; transition: 0.2s; }
+        .btn-print:hover { background: #7dd3fc; transform: translateY(-2px); }
+
+        /* Preview Canvas */
+        .viewport { flex: 1; display: flex; justify-content: center; align-items: center; overflow: auto; padding: 20px; }
+        #label-canvas { background: white; width: 4in; height: 6in; position: relative; box-shadow: 0 0 40px rgba(0,0,0,0.4); }
+
+        .qr-element { position: absolute; display: flex; flex-direction: column; align-items: center; }
+        .qr-text { font-family: Arial, sans-serif; font-weight: bold; color: black; text-align: center; word-break: break-all;
+        margin-top: 10px; /* Adds space specifically above the text */
+         }
+
+        @media print {
+            body { background: white; }
+            .sidebar { display: none; }
+            .viewport { padding: 0; overflow: visible; }
+            #label-canvas { box-shadow: none; position: fixed; top: 0; left: 0; }
+            @page { size: 4in 6in; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Label Editor</h2>
+    
+    <div class="control-box">
+        <label class="label-text">Global Content</label>
+        <input type="text" id="main-val" value="TP4ROEU01187334" oninput="draw()">
+        
+        <div class="label-row"><span class="label-text">Global Font Size</span></div>
+        <div class="input-sync">
+            <input type="range" id="f-size-s" min="10" max="50" value="16" oninput="sync('f-size-s','f-size-n')">
+            <input type="number" id="f-size-n" value="16" oninput="sync('f-size-n','f-size-s')">
+        </div>
+    </div>
+
+    <!-- Unit 1 -->
+    <div class="control-box">
+        <h3 style="font-size:0.8rem; margin:0 0 10px 0;">UNIT 1 (TOP)</h3>
+        <div class="label-row"><span class="label-text">X Position</span></div>
+        <div class="input-sync">
+            <input type="range" id="u1x-s" min="0" max="300" value="110" oninput="sync('u1x-s','u1x-n')">
+            <input type="number" id="u1x-n" value="110" oninput="sync('u1x-n','u1x-s')">
+        </div>
+        <div class="label-row"><span class="label-text">Y Position</span></div>
+        <div class="input-sync">
+            <input type="range" id="u1y-s" min="0" max="500" value="40" oninput="sync('u1y-s','u1y-n')">
+            <input type="number" id="u1y-n" value="40" oninput="sync('u1y-n','u1y-s')">
+        </div>
+        <div class="label-row"><span class="label-text">QR Size</span></div>
+        <div class="input-sync">
+            <input type="range" id="u1sz-s" min="50" max="300" value="160" oninput="sync('u1sz-s','u1sz-n')">
+            <input type="number" id="u1sz-n" value="160" oninput="sync('u1sz-n','u1sz-s')">
+        </div>
+    </div>
+
+    <!-- Unit 2 -->
+    <div class="control-box">
+        <h3 style="font-size:0.8rem; margin:0 0 10px 0;">UNIT 2 (BOTTOM)</h3>
+        <div class="label-row"><span class="label-text">X Position</span></div>
+        <div class="input-sync">
+            <input type="range" id="u2x-s" min="0" max="300" value="110" oninput="sync('u2x-s','u2x-n')">
+            <input type="number" id="u2x-n" value="110" oninput="sync('u2x-n','u2x-s')">
+        </div>
+        <div class="label-row"><span class="label-text">Y Position</span></div>
+        <div class="input-sync">
+            <input type="range" id="u2y-s" min="0" max="500" value="320" oninput="sync('u2y-s','u2y-n')">
+            <input type="number" id="u2y-n" value="320" oninput="sync('u2y-n','u2y-s')">
+        </div>
+        <div class="label-row"><span class="label-text">QR Size</span></div>
+        <div class="input-sync">
+            <input type="range" id="u2sz-s" min="50" max="300" value="160" oninput="sync('u2sz-s','u2sz-n')">
+            <input type="number" id="u2sz-n" value="160" oninput="sync('u2sz-n','u2sz-s')">
+        </div>
+    </div>
+
+    <button class="btn-print" onclick="window.print()">PRINT 4x6 LABEL</button>
+</div>
+
+<div class="viewport">
+    <div id="label-canvas">
+        <div id="el1" class="qr-element">
+            <div id="q1"></div>
+            <div id="t1" class="qr-text"></div>
+        </div>
+        <div id="el2" class="qr-element">
+            <div id="q2"></div>
+            <div id="t2" class="qr-text"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Two-way sync function
+    function sync(sourceId, targetId) {
+        const source = document.getElementById(sourceId);
+        const target = document.getElementById(targetId);
+        target.value = source.value;
+        draw();
+    }
+
+    function draw() {
+        const textVal = document.getElementById('main-val').value;
+        const fontSize = document.getElementById('f-size-n').value + 'px';
+
+        const units = [
+            { id: '1', x: 'u1x-n', y: 'u1y-n', sz: 'u1sz-n' },
+            { id: '2', x: 'u2x-n', y: 'u2y-n', sz: 'u2sz-n' }
+        ];
+
+        units.forEach(u => {
+            const x = document.getElementById(u.x).value;
+            const y = document.getElementById(u.y).value;
+            const size = document.getElementById(u.sz).value;
+
+            // Position container
+            const el = document.getElementById('el' + u.id);
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+
+            // Regenerate QR
+            const qDiv = document.getElementById('q' + u.id);
+            qDiv.innerHTML = "";
+            new QRCode(qDiv, {
+                text: textVal,
+                width: parseInt(size),
+                height: parseInt(size),
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Update Text
+            const tDiv = document.getElementById('t' + u.id);
+            tDiv.innerText = textVal;
+            tDiv.style.fontSize = fontSize;
+            tDiv.style.width = size + 'px';
+        });
+    }
+
+    window.onload = draw;
+</script>
+
+</body>
+</html>
