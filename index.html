@@ -23,6 +23,7 @@
             --rose-grad: linear-gradient(135deg, #f43f5e, #be123c);
             --teal-grad: linear-gradient(135deg, #14b8a6, #0f766e);
             --slate-grad: linear-gradient(135deg, #64748b, #334155);
+            --yellow-grad: linear-gradient(135deg, #eab308, #a16207);
         }
 
         * {
@@ -168,6 +169,14 @@
         .theme-slate::before { background: var(--slate-grad); }
         .theme-slate:hover { background: rgba(100, 116, 139, 0.1); }
 
+        .theme-purple::before { background: var(--purple-grad); }
+        .theme-purple:hover { background: rgba(59, 130, 246, 0.1); }
+
+        .theme-yellow::before { background: var(--yellow-grad); }
+        .theme-yellow:hover { background: rgba(234, 179, 8, 0.1); }
+
+
+
         @media (max-width: 1100px) {
             .button-grid {
                 grid-template-columns: repeat(4, 1fr);
@@ -195,36 +204,64 @@
         <div class="section">
             <!-- <div class="section-title">New, Pack & Operations</div> -->
             <div class="button-grid">
-                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%2C%221%22%3A%2262026%22%7D%7D" target="_blank" class="btn theme-blue">
+                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2263745%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="btn theme-blue">
                     <span class="icon">🛒</span>
-                    <span class="label">FK/Myntra New</span>
+                    <span class="label">Meesho OMS</span>
                 </a>
-                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="btn theme-blue">
-                    <span class="icon">🛒</span>
-                    <span class="label">Meesho New</span>
-                </a>
-                <a href="https://client.omsguru.com/orders/newOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%7D" target="_blank" class="btn theme-blue">
-                    <span class="icon">🛒</span>
-                    <span class="label">Amazon New</span>
-                </a>
-                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%2C%221%22%3A%2262026%22%7D%7D" target="_blank" class="btn theme-amber">
+                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2263745%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="btn theme-blue">
                     <span class="icon">📦</span>
-                    <span class="label">Pack FK/Myntra</span>
+                    <span class="label">Pack OMS</span>
                 </a>
-                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="btn theme-amber">
-                    <span class="icon">📦</span>
-                    <span class="label">Pack Meesho</span>
+                <a href="https://client.omsguru.com/orders/dispatchOrders" target="_blank" class="btn theme-blue">
+                    <span class="icon">🚚</span>
+                    <span class="label">Ship Meesho</span>
                 </a>
-                <!-- Added Button 1 -->
-                <a href="https://axstudio8520.github.io/oms/sku" target="_blank" class="btn theme-rose">
-                    <span class="icon">📦</span>
-                    <span class="label">Pick List</span>
-                </a>
-                <!-- Added Button 2 -->
-                <a href="https://client.omsguru.com/notifications" target="_blank" class="btn theme-rose">
+                <a href="https://client.omsguru.com/notifications" target="_blank" class="btn theme-yellow">
                     <span class="icon">🔔</span>
                     <span class="label">Notification</span>
                 </a>
+                <a href="https://oms.invi.ai/shipments?scope=new_shipments&filter%5Bcontains_channel_plus_warehouse%5D%5B%5D=1220%3A353&filter%5Bcontains_channel_plus_warehouse%5D%5B%5D=1224" target="_blank" class="btn theme-rose">
+                    <span class="icon">🛒</span>
+                    <span class="label">FK/Myntra New</span>
+                </a>
+                <a href="https://oms.invi.ai/shipments?filter%5Bcontains_channel_plus_warehouse%5D%5B%5D=1220%3A353&filter%5Bcontains_channel_plus_warehouse%5D%5B%5D=1224&scope=rts_shipments" target="_blank" class="btn theme-rose">
+                    <span class="icon">🛒</span>
+                    <span class="label">FK/Myntra Ship</span>
+                </a>
+                <a href="https://oms.invi.ai/shipments?filter%5Bcontains_channel_plus_warehouse%5D%5B%5D=1220%3A353&filter%5Bcontains_channel_plus_warehouse%5D%5B%5D=1224&scope=manifest_shipments" target="_blank" class="btn theme-rose">
+                    <span class="icon">🛒</span>
+                    <span class="label">FK/Myntra Menifest</span>
+                </a>
+                <a href="https://oms.invi.ai/shipments?scope=new_shipments&filter%5Bcontains_channel_plus_warehouse%5D%5B%5D=1221" target="_blank" class="btn theme-slate">
+                    <span class="icon">🛒</span>
+                    <span class="label">Amazon New</span>
+                </a>
+                <a href="https://oms.invi.ai/shipments?scope=rts_shipments&filter%5Bcontains_channel_plus_warehouse%5D%5B%5D=1221" target="_blank" class="btn theme-slate">
+                    <span class="icon">🛒</span>
+                    <span class="label">Amazon Ship</span>
+                </a>
+                <a href="https://oms.invi.ai/shipments?filter%5Bcontains_channel_plus_warehouse%5D%5B%5D=1221&scope=manifest_shipments" target="_blank" class="btn theme-slate">
+                    <span class="icon">🛒</span>
+                    <span class="label">Amazon Menifest</span>
+                </a>
+                <!-- Added Button 1 -->
+                <a href="https://axstudio8520.github.io/oms/sku" target="_blank" class="btn theme-yellow">
+                    <span class="icon">📦</span>
+                    <span class="label">Pick List</span>
+                </a>
+                <a href="https://oms.invi.ai/shipments?scope=new_shipments&filter%5Bcontains_channel_plus_warehouse%5D%5B%5D=1231" target="_blank" class="btn theme-green">
+                    <span class="icon">🛒</span>
+                    <span class="label">EJISH New</span>
+                </a>
+                <a href="https://oms.invi.ai/shipments?scope=rts_shipments&filter%5Bcontains_channel_plus_warehouse%5D%5B%5D=1231" target="_blank" class="btn theme-green">
+                    <span class="icon">🛒</span>
+                    <span class="label">EJISH Ship</span>
+                </a>
+                <a href="https://oms.invi.ai/shipments?filter%5Bcontains_channel_plus_warehouse%5D%5B%5D=1231&scope=manifest_shipments" target="_blank" class="btn theme-green">
+                    <span class="icon">🛒</span>
+                    <span class="label">EJISH Menifest</span>
+                </a>
+                <!-- Added Button 2 -->
             </div>
         </div>
 
@@ -232,36 +269,16 @@
         <div class="section">
             <!-- <div class="section-title">Dispatch & Catalog</div> -->
             <div class="button-grid">
-                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2239576%22%2C%221%22%3A%2262026%22%7D%7D" target="_blank" class="btn theme-green">
-                    <span class="icon">🚚</span>
-                    <span class="label">Ship FK/Myntra</span>
-                </a>
-                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2218515%22%2C%221%22%3A%2218425%22%2C%222%22%3A%2249572%22%7D%7D" target="_blank" class="btn theme-green">
-                    <span class="icon">🚚</span>
-                    <span class="label">Ship Meesho</span>
-                </a>
-                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22channel_company_id%22%3A%7B%220%22%3A%2243116%22%7D%7D" target="_blank" class="btn theme-green">
-                    <span class="icon">🚚</span>
-                    <span class="label">Ship Amazon</span>
-                </a>
-                <a href="https://client.omsguru.com/orders/packOrders?filter=%7B%22shipping_company%22%3A%7B%22ne%22%3A%22%22%7D%7D" target="_blank" class="btn theme-teal">
-                    <span class="icon">📜</span>
-                    <span class="label">Pack Down</span>
-                </a>
                 <a href="https://client.omsguru.com/skus/inventory" target="_blank" class="btn theme-teal">
                     <span class="icon">🏭</span>
                     <span class="label">Inventory</span>
                 </a>
                 <!-- Added Button 3 -->
-                <a href="https://client.omsguru.com/skus/list_products" target="_blank" class="btn theme-rose">
+                <a href="https://client.omsguru.com/skus/list_products" target="_blank" class="btn theme-slate">
                     <span class="icon">👕</span>
                     <span class="label">Products</span>
                 </a>
-                <!-- Added Button 4 -->
-                <a href="https://client.omsguru.com/orders/dispatchOrders?filter=%7B%22product_category_id%22%3A%7B%220%22%3A%22202454%22%7D%7D" target="_blank" class="btn theme-rose">
-                    <span class="icon">📝</span>
-                    <span class="label">Ready Mousepad</span>
-                </a>
+                
             </div>
         </div>
 
